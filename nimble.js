@@ -9,6 +9,7 @@
  */
 
 (function (exports) {
+    function noop(){}
 
     var keys = Object.keys || function (obj) {
         var results = [];
@@ -21,7 +22,7 @@
     };
 
     var fallback = function (name, fallback) {
-        var nativeFn = Array.prototype[name];
+        var nativeFn = [][name];
         return function (obj, iterator, memo) {
             var fn = obj ? obj[name]: 0;
             return fn && fn === nativeFn ?
@@ -49,7 +50,7 @@
             var cb = function (err) {
                 if (err) {
                     callback(err);
-                    callback = function () {};
+                    callback = noop;
                 }
                 else {
                     if (++completed === len) {
@@ -57,7 +58,7 @@
                     }
                 }
             };
-            var args = Array.prototype.slice.call(arguments);
+            var args = [].slice.call(arguments);
             if (iterator.length) {
                 args = args.slice(0, iterator.length - 1);
                 args[iterator.length - 1] = cb;
@@ -81,7 +82,7 @@
             args[iterator.length - 1] = function (err) {
                 if (err) {
                     callback(err);
-                    callback = function () {};
+                    callback = noop;
                 }
                 else {
                     if (++completed === keys_list.length) {
@@ -205,12 +206,12 @@
         var results = new fns.constructor();
         eachParallel(fns, function (fn, k, cb) {
             fn(function (err) {
-                var v = Array.prototype.slice.call(arguments, 1);
+                var v = [].slice.call(arguments, 1);
                 results[k] = v.length <= 1 ? v[0]: v;
                 cb(err);
             });
         }, function (err) {
-            (callback || function () {})(err, results);
+            (callback || noop)(err, results);
         });
     };
 
@@ -218,12 +219,12 @@
         var results = new fns.constructor();
         eachSeries(fns, function (fn, k, cb) {
             fn(function (err, result) {
-                var v = Array.prototype.slice.call(arguments, 1);
+                var v = [].slice.call(arguments, 1);
                 results[k] = v.length <= 1 ? v[0]: v;
                 cb(err);
             });
         }, function (err) {
-            (callback || function () {})(err, results);
+            (callback || noop)(err, results);
         });
     };
 
