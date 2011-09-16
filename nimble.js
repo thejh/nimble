@@ -150,8 +150,7 @@
             };
             var args = [value, k, obj];
             if (iterator.length) {
-                args = args.slice(0, iterator.length - 1);
-                args[iterator.length - 1] = cb;
+                (args = args.slice(0, iterator.length - 1))[iterator.length - 1] = cb;
             }
             else {
                 args.push(cb);
@@ -177,8 +176,7 @@
             };
             var args = [memo, value, i, obj];
             if (iterator.length) {
-                args = args.slice(0, iterator.length - 1);
-                args[iterator.length - 1] = cb;
+                (args = args.slice(0, iterator.length - 1))[iterator.length - 1] = cb;
             }
             else {
                 args.push(cb);
@@ -207,7 +205,7 @@
         eachParallel(fns, function (fn, k, cb) {
             fn(function (err) {
                 var v = [].slice.call(arguments, 1);
-                results[k] = v.length <= 1 ? v[0]: v;
+                results[k] = v.length < 2 ? v[0]: v;
                 cb(err);
             });
         }, function (err) {
@@ -220,7 +218,7 @@
         eachSeries(fns, function (fn, k, cb) {
             fn(function (err, result) {
                 var v = [].slice.call(arguments, 1);
-                results[k] = v.length <= 1 ? v[0]: v;
+                results[k] = v.length < 2 ? v[0]: v;
                 cb(err);
             });
         }, function (err) {
